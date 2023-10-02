@@ -7,4 +7,5 @@ exports.fetchTopics = () => {
     return db.query(topicsQuery).then(({ rows }) => {
         return rows;
     })
+    
 }
