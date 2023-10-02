@@ -23,6 +23,7 @@ describe('Invalid path - error handling', () => {
     })
 })
 
+
 describe('GET /api/topics', () => {
     test('GET:200 sends an array of topics to the client', () => {
         return request(app)
