@@ -44,7 +44,7 @@ describe('GET /api/topics', () => {
 })
 
 describe('GET /api', () => {
-    test('GET: 200 send an object describing all the available endpoints on your API', async () => {
+    test('GET: 200 sends an object describing all the available endpoints on your API', async () => {
         return request(app)
         .get('/api')
         .expect(200)
@@ -78,4 +78,32 @@ describe('GET /api', () => {
             expect(result).toBe(true)
         })
     })
+})
+
+describe('GET /api/articles/:article_id', () => {
+    test('GET: 200 sends an array with article of correct ID', () => {
+        return request(app)
+        .get('/api/articles/2')
+        .expect(200)
+        .then((response) => {
+            expect.objectContaining({
+                article_id: 2,
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                article_img_url: expect.any(String),
+                votes: expect.any(Number)
+              })
+        })
+    });
+    // test('GET: sends an appropriate status and error message when given an invalid id', () => {
+    //     return request(app)
+    //     .get('/api/articles/not-an-id')
+    //     .expect(404)
+    //     .then((response) => {
+    //         expect(response.body.msg).toBe('Bad request');
+    //     })
+    // })
 })
