@@ -4,7 +4,6 @@ const app = require('../app');
 const request = require("supertest");
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data');
-const fs = require("fs/promises");
 
 beforeEach(() => {
     return seed(testData);
@@ -36,8 +35,8 @@ describe('GET /api/topics', () => {
             expect(typeof topic.description).toBe('string');
             expect(typeof topic.slug).toBe('string');
             expect.objectContaining({
-                description: 'The man, the Mitch, the legend',
-                slug: 'mitch'
+                description: expect.any(String),
+                slug: expect.any(String)
               })
         });
       });
@@ -50,6 +49,9 @@ describe('GET /api', () => {
         .get('/api')
         .expect(200)
         .then((response) => {
+            const stringResponse = JSON.stringify(response.body)
+            const parsedBody = JSON.parse(stringResponse)
+
             let existingPaths = []
             let pathsInJsonFile = []
             let result = true;
@@ -60,17 +62,19 @@ describe('GET /api', () => {
                 }
               })
 
-            for (const key in response.body) {
-                const splittedKey = key.split(' ')
-                pathsInJsonFile.push(splittedKey[1])
+            for (const key in parsedBody) {
+                const pathInParsedBody = key.split(' ')
+                pathsInJsonFile.push(pathInParsedBody[1])
             }
 
             for(let element of existingPaths) {
+
                 if (!pathsInJsonFile.includes(element)) {
                    result = false;
                 }
              }
 
+            expect(typeof parsedBody).toBe('object')
             expect(result).toBe(true)
         })
     })
