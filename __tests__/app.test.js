@@ -9,7 +9,7 @@ beforeEach(() => {
     return seed(testData);
 });
 afterAll(()=>{
-    return db.end
+    return db.end();
 })
 
 describe('Invalid path - error handling', () => {
@@ -76,6 +76,17 @@ describe('GET /api', () => {
 
             expect(typeof parsedBody).toBe('object')
             expect(result).toBe(true)
+        })
+    })
+})
+
+describe('GET /api/articles', () => {
+    test('GET: 200 sends and array of articles to the client sorted by date in descending order', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('created_at', { descending: true });
         })
     })
 })
