@@ -1,4 +1,5 @@
 const { fetchTopics,
+        fetchArticleById,
         fetchArticles
       } = require("../models/app.models")
 
@@ -16,7 +17,36 @@ exports.getTopics = (req, res, next) => {
 exports.getEndpoints = (req, res, next) => {
     res.status(200).send(endpoints)
     .catch((err) => {
-        next(err)
+        next(err);
+    })
+}
+
+exports.getArticleByID = (req, res, next) => {
+    const articleID = req.params.article_id
+    fetchArticleById(articleID).then((article) => {
+        res.status(200).send({article})
+    })
+    .catch((err) => {
+        next(err);
+    })
+}
+
+exports.getArticles = (req, res, next) => {
+    fetchArticles().then((articles) => {
+            res.status(200).send({ articles })
+    })
+    .catch((err) => {
+        next(err);
+    })
+}
+
+exports.getArticleByID = (req, res, next) => {
+    const articleID = req.params.article_id
+    fetchArticleById(articleID).then((article) => {
+        res.status(200).send({article})
+    })
+    .catch((err) => {
+        next(err);
     })
 }
 
