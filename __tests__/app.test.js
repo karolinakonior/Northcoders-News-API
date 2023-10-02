@@ -18,7 +18,7 @@ describe('Invalid path - error handling', () => {
         .get('/api/tresdgtriwjpic')
         .expect(404)
         .then((response) => {
-            expect(response.body.msg).toBe('Path not found');
+            expect(response.body.msg).toBe('Path not found.');
         })
     })
 })
@@ -34,10 +34,10 @@ describe('GET /api/topics', () => {
             response.body.topics.forEach((topic) => {
             expect(typeof topic.description).toBe('string');
             expect(typeof topic.slug).toBe('string');
-            expect.objectContaining({
+            expect(response.body.topics[0]).toEqual(expect.objectContaining({
                 description: expect.any(String),
                 slug: expect.any(String)
-              })
+              }))
         });
       });
     });
@@ -86,7 +86,7 @@ describe('GET /api/articles/:article_id', () => {
         .get('/api/articles/2')
         .expect(200)
         .then((response) => {
-            expect.objectContaining({
+            expect(response.body.article[0]).toEqual(expect.objectContaining({
                 article_id: 2,
                 title: expect.any(String),
                 topic: expect.any(String),
@@ -95,17 +95,25 @@ describe('GET /api/articles/:article_id', () => {
                 created_at: expect.any(String),
                 article_img_url: expect.any(String),
                 votes: expect.any(Number)
-              })
+              }))
         })
     });
-    // test('GET: sends an appropriate status and error message when given an invalid id', () => {
-    //     return request(app)
-    //     .get('/api/articles/not-an-id')
-    //     .expect(404)
-    //     .then((response) => {
-    //         expect(response.body.msg).toBe('Bad request');
-    //     })
-    // })
+    test('GET: 400 sends an appropriate status and error message when given an invalid id', () => {
+        return request(app)
+        .get('/api/articles/not-an-id')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('GET: 404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+        return request(app)
+          .get('/api/articles/99999999999999')
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('Not found.');
+          });
+      });
 })
 
 
