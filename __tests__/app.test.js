@@ -34,7 +34,48 @@ describe('GET /api/topics', () => {
             response.body.topics.forEach((topic) => {
             expect(typeof topic.description).toBe('string');
             expect(typeof topic.slug).toBe('string');
+            expect.objectContaining({
+                description: expect.any(String),
+                slug: expect.any(String)
+              })
         });
       });
     });
+})
+
+describe('GET /api', () => {
+    test('GET: 200 send an object describing all the available endpoints on your API', async () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then((response) => {
+            const stringResponse = JSON.stringify(response.body)
+            const parsedBody = JSON.parse(stringResponse)
+
+            let existingPaths = []
+            let pathsInJsonFile = []
+            let result = true;
+
+            app._router.stack.forEach(function(r){
+                if (r.route && r.route.path){
+                    existingPaths.push(r.route.path)
+                }
+              })
+
+            for (const key in parsedBody) {
+                const pathInParsedBody = key.split(' ')
+                pathsInJsonFile.push(pathInParsedBody[1])
+            }
+
+            for(let element of existingPaths) {
+
+                if (!pathsInJsonFile.includes(element)) {
+                   result = false;
+                }
+             }
+
+            expect(typeof parsedBody).toBe('object')
+            expect(result).toBe(true)
+        })
+    })
 })
