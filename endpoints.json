@@ -2,6 +2,9 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
+  "ALL /*": {
+    "description": "serves up 404 error when entered path is incorrect"
+  },
   "GET /api/topics": {
     "description": "serves an array of all topics",
     "queries": [],

@@ -1,4 +1,7 @@
-const { fetchTopics } = require("../models/app.models")
+const { fetchTopics,
+      } = require("../models/app.models")
+
+const endpoints = require('../endpoints.json')
 
 exports.getTopics = (req, res, next) => {
     fetchTopics().then((topics) => {
@@ -7,6 +10,11 @@ exports.getTopics = (req, res, next) => {
     .catch((err) => {
         next(err);
     })
+}
 
-    
+exports.getEndpoints = (req, res, next) => {
+    res.status(200).send(endpoints)
+    .catch((err) => {
+        next(err)
+    })
 }
