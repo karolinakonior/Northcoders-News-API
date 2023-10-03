@@ -87,20 +87,22 @@ describe('GET /api/articles', () => {
         .expect(200)
         .then((response) => {
             expect(response.body.articles).toBeSortedBy('created_at', { descending: true });
-            expect(typeof response.body.articles).toBe('object');
-            expect(response.body.articles[0]).toEqual(
-                expect.objectContaining({
-                    comment_count: expect.any(String),
-                    article_id: expect.any(Number),
-                    title: expect.any(String),
-                    topic: expect.any(String),
-                    author: expect.any(String),
-                    created_at: expect.any(String),
-                    votes: expect.any(Number),
-                    article_img_url: expect.any(String),
-                    comment_count: expect.any(Number)
-                })
-              );
+            response.body.articles.forEach(article => {
+                expect(typeof article).toBe('object');
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    })
+                  );
+            })
         })
     })
 })
