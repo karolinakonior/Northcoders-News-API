@@ -113,21 +113,40 @@ describe('GET /api/articles/:article_id', () => {
       });
 })
 
-// describe('GET /api/articles/:article_id/comments', () => {
-//     test('GET: 200 sends an array with all comments of an article', () => {
-//         return request(app)
-//         .get('/api/articles/5/comments')
-//         .expect(200)
-//         .then(response => {
-//             expect(response.body.comments.length).toBe(2);
-//             expect(response.body.comments).toEqual(expect.objectContaining({
-//                 comment_id: expect.any(Number),
-//                 votes: expect.any(Number),
-//                 created_at: expect.any(String),
-//                 author: expect.any(String),
-//                 body: expect.any(String),
-//                 article_id: expect.any(Number)
-//             }))
-//         })
-//     })
-// })
+describe('GET /api/articles/:article_id/comments', () => {
+    test('GET: 200 sends an array of all comments of an article', () => {
+        return request(app)
+        .get('/api/articles/5/comments')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toBeSortedBy('created_at', { descending: true });
+            expect(response.body.comments.length).toBe(2);
+            response.body.comments.forEach(comment => {
+                expect(comment).toEqual(expect.objectContaining({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: expect.any(Number)
+                }))
+            })
+        })
+    })
+    test('GET: 400 sends an appropriate status and error message when given an invalid article id', () => {
+        return request(app)
+        .get('/api/articles/not-an-id/comments')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('GET: 404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+        return request(app)
+          .get('/api/articles/999999999999999999999999/comments')
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('Not found.');
+          });
+      });
+})
