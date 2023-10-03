@@ -143,19 +143,77 @@ describe('GET /api/articles', () => {
 
 describe('POST /api/articles/:article_id/comments', () => {
     test('POST: 201 posts a comment for an article and responds with the posted comment', () => {
-
         let comment = { 
             username: 'lurker',
             body: 'Excellent article, well written.'
         };
-
         return request(app)
         .post('/api/articles/13/comments')
         .send(comment)
         .expect(201)
         .then((response) => {
+            expect(response.body.comment).toEqual(expect.objectContaining({
+                comment_id: 19,
+                body: 'Excellent article, well written.',
+                article_id: 13,
+                author: 'lurker',
+                votes: 0,
+                created_at: expect.any(String)
+                })
+              );
         expect(response.body.comment.author).toBe('lurker');
         expect(response.body.comment.body).toBe('Excellent article, well written.');
+      });
+    })
+    test('POST: 400 sends an appropriate status and error message when given username that does not exists', () => {
+        let comment = { 
+            username: 'mitch',
+            body: 'Excellent article, well written.'
+        };
+        return request(app)
+        .post('/api/articles/13/comments')
+        .send(comment)
+        .expect(400)
+        .then((response) => {
+        expect(response.body.msg).toBe('Bad request.');
+      });
+    });
+    test('POST: 400 sends an appropriate status and error message when not given body', () => {
+        let comment = { 
+            username: 'mitch'
+        };
+        return request(app)
+        .post('/api/articles/13/comments')
+        .send(comment)
+        .expect(400)
+        .then((response) => {
+        expect(response.body.msg).toBe('Bad request.');
+      });
+    })
+    test('POST: 404 sends an appropriate status and error message when given a valid but non-existent article id', () => {
+        let comment = { 
+            username: 'lurker',
+            body: 'Excellent article, well written.'
+        };
+        return request(app)
+        .post('/api/articles/13423245355/comments')
+        .send(comment)
+        .expect(404)
+        .then((response) => {
+        expect(response.body.msg).toBe('Not found.');
+      });
+    })
+    test('POST: 404 sends an appropriate status and error message when given an invalid article id', () => {
+        let comment = { 
+            username: 'lurker',
+            body: 'Excellent article, well written.'
+        };
+        return request(app)
+        .post('/api/articles/not-in-id/comments')
+        .send(comment)
+        .expect(400)
+        .then((response) => {
+        expect(response.body.msg).toBe('Bad request.');
       });
     })
 })

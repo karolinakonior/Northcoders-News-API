@@ -50,6 +50,9 @@ exports.postComment = (req, res, next) => {
     insertComment(username, body, articleId).then(comment => {
         res.status(201).send({ comment })
     })
+    .catch(err => {
+        next(err)
+    })
 }
 
 

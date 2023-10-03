@@ -43,7 +43,7 @@ You are now connected to database "nc_news_test" as user "karolinakonior".
          16 | This is a bad article name                                                                                                                                                           |          6 | butter_bridge |     1 | 2020-10-11 16:23:00
          17 | The owls are not what they seem.                                                                                                                                                     |          9 | icellusedkars |    20 | 2020-03-14 17:02:00
          18 | This morning, I showered for nine minutes.                                                                                                                                           |          1 | butter_bridge |    16 | 2020-07-21 01:20:00
-         19 | Excellent article, well written.                                                                                                                                                     |         13 | lurker        |     0 | 2023-10-03 15:57:28.139339
+         19 | Excellent article, well written.                                                                                                                                                     |         13 | lurker        |     0 | 2023-10-03 18:14:44.708566
 (19 rows)
 
    username    |    name    |                                avatar_url                                 
