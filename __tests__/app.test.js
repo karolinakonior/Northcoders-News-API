@@ -133,6 +133,14 @@ describe('GET /api/articles/:article_id/comments', () => {
             })
         })
     })
+    test('GET: 200 sends an empty array when a given valid id with no comments associated with it', () => {
+        return request(app)
+          .get('/api/articles/2/comments')
+          .expect(200)
+          .then((response) => {
+            expect(response.body.msg).toBe('No comments found for this article.');
+          });
+      });
     test('GET: 400 sends an appropriate status and error message when given an invalid article id', () => {
         return request(app)
         .get('/api/articles/not-an-id/comments')

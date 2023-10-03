@@ -35,6 +35,9 @@ exports.getCommentsByArticleId = (req, res, next) => {
     const articleId = req.params.article_id;
 
     fetchCommentsByArticleId(articleId).then(comments => {
+        if (comments.length === 0) {
+            res.status(200).send({msg: 'No comments found for this article.'});
+        }
         res.status(200).send({comments});
     })
     .catch(err => {
