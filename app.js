@@ -3,18 +3,23 @@ const app = express();
 
 const { getTopics,
         getEndpoints,
+
         getArticleByID,
         getArticles
       } = require('./controllers/app.controllers')
+
+
+
+
+
+
+app.get('/api/articles', getArticles)
 
 app.get('/api', getEndpoints);
 
 app.get('/api/topics', getTopics);
 
-
-app.get('/api/articles', getArticles)
-
-app.get('/api/articles/:article_id', getArticleByID)
+app.get('/api/articles/:article_id', getArticleByID);
 
 
 app.all('/*', (req, res, next) => {

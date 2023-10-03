@@ -16,14 +16,6 @@ exports.fetchArticleById = (articleID) => {
     })
 }
 
-exports.fetchArticleById = (articleID) => {
-    return db.query(`SELECT * FROM articles
-                    WHERE article_id = $1;`, [articleID])
-    .then(({ rows }) => {
-        return rows;
-    })
-}
-
 exports.fetchArticles = () => {
     return db.query(`SELECT CAST(COUNT(comments) AS INT) AS comment_count, articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url FROM articles
     LEFT JOIN comments 
