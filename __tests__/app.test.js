@@ -141,3 +141,21 @@ describe('GET /api/articles', () => {
     })
 })
 
+describe('POST /api/articles/:article_id/comments', () => {
+    test('POST: 201 posts a comment for an article and responds with the posted comment', () => {
+
+        let comment = { 
+            username: 'lurker',
+            body: 'Excellent article, well written.'
+        };
+
+        return request(app)
+        .post('/api/articles/13/comments')
+        .send(comment)
+        .expect(201)
+        .then((response) => {
+        expect(response.body.comment.author).toBe('lurker');
+        expect(response.body.comment.body).toBe('Excellent article, well written.');
+      });
+    })
+})

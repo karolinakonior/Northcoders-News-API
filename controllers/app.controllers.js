@@ -1,6 +1,7 @@
 const { fetchTopics,
         fetchArticles,
-        fetchArticleById
+        fetchArticleById,
+        insertComment
       } = require("../models/app.models")
 
 const endpoints = require('../endpoints.json')
@@ -41,6 +42,15 @@ exports.getArticles = (req, res, next) => {
     })
 }
 
+exports.postComment = (req, res, next) => {
+    const body = req.body.body;
+    const articleId = req.params.article_id;
+    const username = req.body.username;
+
+    insertComment(username, body, articleId).then(comment => {
+        res.status(201).send({ comment })
+    })
+}
 
 
 
