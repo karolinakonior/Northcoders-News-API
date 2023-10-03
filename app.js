@@ -5,9 +5,11 @@ const { getTopics,
         getEndpoints,
         getArticleByID,
         getCommentsByArticleId,
-        getArticles
+        getArticles,
+        patchArticle
       } = require('./controllers/app.controllers')
 
+app.use(express.json());
 
 app.get('/api', getEndpoints);
 
@@ -19,6 +21,7 @@ app.get('/api/articles/:article_id', getArticleByID);
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
+app.patch('/api/articles/:article_id', patchArticle)
 
 app.all('/*', (req, res, next) => {
     res.status(404).send({ msg: 'Path not found.' });
