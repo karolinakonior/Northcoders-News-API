@@ -138,7 +138,7 @@ describe('GET /api/articles/:article_id/comments', () => {
           .get('/api/articles/2/comments')
           .expect(200)
           .then((response) => {
-            expect(response.body.msg).toBe('No comments found for this article.');
+            expect(response.body.comments).toEqual([]);
           });
       });
     test('GET: 400 sends an appropriate status and error message when given an invalid article id', () => {
