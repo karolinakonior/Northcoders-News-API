@@ -39,3 +39,8 @@ exports.fetchArticles = () => {
         return rows;
     })
 }
+
+exports.findAndDeleteComment = (commentID) => {
+    return db.query(`DELETE FROM comments
+                     WHERE comment_id = $1;`, [commentID])
+}

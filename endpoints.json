@@ -60,5 +60,9 @@
         "article_id": 5
       }]
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment by comment_id",
+    "queries": ["comment_id"]
   }
 }

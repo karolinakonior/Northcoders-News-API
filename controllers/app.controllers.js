@@ -2,6 +2,7 @@ const { fetchTopics,
         fetchArticleById,
         fetchCommentsByArticleId,
         fetchArticles,
+        findAndDeleteComment
       } = require("../models/app.models")
 
 const endpoints = require('../endpoints.json')
@@ -49,5 +50,15 @@ exports.getArticles = (req, res, next) => {
     .catch((err) => {
         next(err);
 
+    })
+}
+
+exports.deleteComment = (req, res, next) => {
+    const commentID = req.params.comment_id;
+    findAndDeleteComment(commentID).then((result) => {
+        res.status(204).send()
+    })
+    .catch(err => {
+        next(err)
     })
 }

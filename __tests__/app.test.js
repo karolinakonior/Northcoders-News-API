@@ -12,7 +12,7 @@ afterAll(()=>{
 })
 
 describe('Invalid path - error handling', () => {
-    test('404 - sends appropriate message when path entered by a client does not exists', () => {
+    test('404 - sends appropriate message when path entered by a client does not exist', () => {
         return request(app)
         .get('/api/tresdgtriwjpic')
         .expect(404)
@@ -183,6 +183,30 @@ describe('GET /api/articles', () => {
                     })
                   );
             })
+        })
+    })
+})
+
+describe('DELETE /api/comments/:comment_id', () => {
+    test('DELETE: 204 deletes the comment by comment id', () => {
+        return request(app)
+        .delete('/api/comments/15')
+        .expect(204)
+    })
+    test('DELETE: 404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+        return request(app)
+        .delete('/api/comments/9999999999999999999')
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe('Not found.');
+        })
+    })
+    test('DELETE: 400 sends an appropriate status and error message when given an invalid id', () => {
+        return request(app)
+        .delete('/api/comments/invalid-id')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe('Bad request.');
         })
     })
 })

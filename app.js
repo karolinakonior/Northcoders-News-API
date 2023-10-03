@@ -5,7 +5,8 @@ const { getTopics,
         getEndpoints,
         getArticleByID,
         getCommentsByArticleId,
-        getArticles
+        getArticles,
+        deleteComment
       } = require('./controllers/app.controllers')
 
 
@@ -19,6 +20,7 @@ app.get('/api/articles/:article_id', getArticleByID);
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
+app.delete('/api/comments/:comment_id', deleteComment)
 
 app.all('/*', (req, res, next) => {
     res.status(404).send({ msg: 'Path not found.' });
