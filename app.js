@@ -3,14 +3,24 @@ const app = express();
 
 const { getTopics,
         getEndpoints,
-        getArticleByID
+
+        getArticleByID,
+        getArticles
       } = require('./controllers/app.controllers')
+
+
+
+
+
+
+app.get('/api/articles', getArticles)
 
 app.get('/api', getEndpoints);
 
 app.get('/api/topics', getTopics);
 
 app.get('/api/articles/:article_id', getArticleByID);
+
 
 app.all('/*', (req, res, next) => {
     res.status(404).send({ msg: 'Path not found.' });
@@ -29,6 +39,5 @@ app.all('/*', (req, res, next) => {
 app.use((err, req, res, next) => {
       res.status(500).send({ msg: 'The server encountered an unexpected condition that prevented it from fulfilling the request.' })
   })
-
 
 module.exports = app;
