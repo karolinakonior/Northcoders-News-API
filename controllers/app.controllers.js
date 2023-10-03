@@ -29,3 +29,7 @@ exports.getArticleByID = (req, res, next) => {
         next(err);
     })
 }
+
+// exports.getCommentsByArticleId = (req, res, next) => {
+//     console.log("IN CONTROLLER")
+// }

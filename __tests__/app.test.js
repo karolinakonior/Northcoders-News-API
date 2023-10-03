@@ -112,3 +112,22 @@ describe('GET /api/articles/:article_id', () => {
           });
       });
 })
+
+// describe('GET /api/articles/:article_id/comments', () => {
+//     test('GET: 200 sends an array with all comments of an article', () => {
+//         return request(app)
+//         .get('/api/articles/5/comments')
+//         .expect(200)
+//         .then(response => {
+//             expect(response.body.comments.length).toBe(2);
+//             expect(response.body.comments).toEqual(expect.objectContaining({
+//                 comment_id: expect.any(Number),
+//                 votes: expect.any(Number),
+//                 created_at: expect.any(String),
+//                 author: expect.any(String),
+//                 body: expect.any(String),
+//                 article_id: expect.any(Number)
+//             }))
+//         })
+//     })
+// })
