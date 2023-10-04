@@ -77,7 +77,7 @@ describe('GET /api', () => {
     })
 })
 
-describe('GET /api/articles/:article_id', () => {
+describe.only('GET /api/articles/:article_id', () => {
     test('GET: 200 sends an array with article of correct ID', () => {
         return request(app)
         .get('/api/articles/2')
@@ -93,6 +93,35 @@ describe('GET /api/articles/:article_id', () => {
                 article_img_url:  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
                 votes: 0
               }))
+        })
+    });
+    test('GET: 200 sends an array with article of correct ID and has a property of comment_count which counts comments associated with the article', () => {
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then((article) => {
+            expect(article.body.article).toEqual(expect.objectContaining({
+                article_id: 1,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                article_img_url:  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                votes: 100,
+                comment_count: 11
+              }))
+            expect(article.body.article.comment_count).toBe(11);
+        })
+    });
+    test('GET: 200 sends an array with article of correct ID and has a property of comment_count which counts comments associated with the article', () => {
+        return request(app)
+        .get('/api/articles/4')
+        .expect(200)
+        .then((article) => {
+            expect(article.body.article).toEqual(expect.objectContaining({
+                comment_count: 0
+              }))
+            expect(article.body.article.comment_count).toBe(0);
         })
     });
     test('GET: 400 sends an appropriate status and error message when given an invalid id', () => {
