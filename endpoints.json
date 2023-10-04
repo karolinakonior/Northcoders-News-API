@@ -76,5 +76,21 @@
       "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }]
     }
-  }
+  },
+    "POST /api/articles/:article_id/comments": {
+    "description": "serves an array of posted comment to the selected article",
+    "queries": ["article_id"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "comment_id": 19,
+          "body": "Excellent article, well written.",
+          "article_id": 13,
+          "author": "lurker",
+          "votes": 0,
+          "created_at": "2023-10-03T17:19:51.181Z"
+        }
+      ]
+    }
+    }
 }

@@ -2,6 +2,7 @@ const { fetchTopics,
         fetchArticleById,
         fetchCommentsByArticleId,
         fetchArticles,
+        insertComment,
         updateArticle
       } = require("../models/app.models")
 
@@ -50,6 +51,19 @@ exports.getArticles = (req, res, next) => {
     .catch((err) => {
         next(err);
 
+    })
+}
+
+exports.postComment = (req, res, next) => {
+    const body = req.body.body;
+    const articleId = req.params.article_id;
+    const username = req.body.username;
+
+    insertComment(username, body, articleId).then(comment => {
+        res.status(201).send({ comment })
+    })
+    .catch(err => {
+        next(err)
     })
 }
 
