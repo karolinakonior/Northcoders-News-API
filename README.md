@@ -14,7 +14,7 @@ If you wish to contribute to this repository please follow this steps.
 
 ###**CLONE YOUR FORK LOCALLY:**
         - On GitHub.com, navigate to your fork of the Northcoders-News-API.
-        - Above the list of files, click  Code.
+        - Above the list of files, click Code.
         - Copy the URL for the repository.
         - Open Terminal.
         - Change the current working directory to the location where you want the cloned directory.

@@ -358,7 +358,7 @@ describe('POST /api/articles/:article_id/comments', () => {
               );
       });
     })
-    test('POST: 400 sends an appropriate status and error message when given username that does not exists', () => {
+    test('POST: 404 sends an appropriate status and error message when given username that does not exists', () => {
         let comment = { 
             username: 'mitch',
             body: 'Excellent article, well written.'
