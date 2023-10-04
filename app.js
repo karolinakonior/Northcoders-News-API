@@ -30,10 +30,10 @@ app.all('/*', (req, res, next) => {
   })
 
   app.use((err, req, res, next) => {
-    if(err.code === '22P02' || err.code === '23503' || err.code === '23502') {
+    if(err.code === '22P02' || err.code === '23502') {
       res.status(400).send({ msg: 'Bad request.'});
     }
-    if(err.code === '22003') {
+    if(err.code === '22003' || err.code === '23503') {
       res.status(404).send({ msg: 'Not found.'});
     }
     next(err);
