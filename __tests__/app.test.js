@@ -194,7 +194,7 @@ describe('PATCH /api/articles/:article_id', () => {
         .send({ inc_votes: 5 })
         .expect(200)
         .then((response) => {
-            expect(response.body.article[0]).toEqual(expect.objectContaining({
+            expect(response.body.article).toEqual(expect.objectContaining({
                     article_id: 3,
                     title: "Eight pug gifs that remind me of mitch",
                     topic: "mitch",
@@ -213,7 +213,7 @@ describe('PATCH /api/articles/:article_id', () => {
         .send({ inc_votes: -20 })
         .expect(200)
         .then((response) => {
-            expect(response.body.article[0]).toEqual(expect.objectContaining({
+            expect(response.body.article).toEqual(expect.objectContaining({
                     article_id: 8,
                     title: "Does Mitch predate civilisation?",
                     topic: "mitch",
@@ -221,6 +221,28 @@ describe('PATCH /api/articles/:article_id', () => {
                     body: "Archaeologists have uncovered a gigantic statue from the dawn of humanity, and it has an uncanny resemblance to Mitch. Surely I am not the only person who can see this?!",
                     created_at: expect.any(String),
                     votes: -20,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                })
+              );
+        })
+    })
+    test('PATCH: 200 sends an array of an article with updated votes by a positive number when sent body with extra keys', () => {
+        return request(app)
+        .patch('/api/articles/3')
+        .send({ 
+            inc_votes: 5,
+            title: "Does Mitch predate civilisation?"
+         })
+        .expect(200)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                    article_id: 3,
+                    title: "Eight pug gifs that remind me of mitch",
+                    topic: "mitch",
+                    author: "icellusedkars",
+                    body: "some gifs",
+                    created_at: expect.any(String),
+                    votes: 5,
                     article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
                 })
               );
@@ -260,6 +282,15 @@ describe('PATCH /api/articles/:article_id', () => {
         .expect(404)
         .then((response) => {
             expect(response.body.msg).toBe('Not found.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when not given a body of patch', () => {
+        return request(app)
+        .patch('/api/articles/8')
+        .send({})
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
         })
     })
 })
