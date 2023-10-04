@@ -210,3 +210,203 @@ describe('DELETE /api/comments/:comment_id', () => {
         })
     })
 })
+
+describe('PATCH /api/articles/:article_id', () => {
+    test('PATCH: 200 sends an array of an article with updated votes by a positive number', () => {
+        return request(app)
+        .patch('/api/articles/3')
+        .send({ inc_votes: 5 })
+        .expect(200)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                    article_id: 3,
+                    title: "Eight pug gifs that remind me of mitch",
+                    topic: "mitch",
+                    author: "icellusedkars",
+                    body: "some gifs",
+                    created_at: expect.any(String),
+                    votes: 5,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                })
+              );
+        })
+    })
+    test('PATCH: 200 sends an array of an article with updated votes by a negative number', () => {
+        return request(app)
+        .patch('/api/articles/8')
+        .send({ inc_votes: -20 })
+        .expect(200)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                    article_id: 8,
+                    title: "Does Mitch predate civilisation?",
+                    topic: "mitch",
+                    author: "icellusedkars",
+                    body: "Archaeologists have uncovered a gigantic statue from the dawn of humanity, and it has an uncanny resemblance to Mitch. Surely I am not the only person who can see this?!",
+                    created_at: expect.any(String),
+                    votes: -20,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                })
+              );
+        })
+    })
+    test('PATCH: 200 sends an array of an article with updated votes by a positive number when sent body with extra keys', () => {
+        return request(app)
+        .patch('/api/articles/3')
+        .send({ 
+            inc_votes: 5,
+            title: "Does Mitch predate civilisation?"
+         })
+        .expect(200)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                    article_id: 3,
+                    title: "Eight pug gifs that remind me of mitch",
+                    topic: "mitch",
+                    author: "icellusedkars",
+                    body: "some gifs",
+                    created_at: expect.any(String),
+                    votes: 5,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                })
+              );
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given an invalid body of the patch (property name)', () => {
+        return request(app)
+        .patch('/api/articles/8')
+        .send({ inc_ves: -20 })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given an invalid body of the patch (value)', () => {
+        return request(app)
+        .patch('/api/articles/8')
+        .send({ inc_votes: "I am a string" })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given an invalid article_id', () => {
+        return request(app)
+        .patch('/api/articles/invalid-id')
+        .send({ inc_votes: 30 })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given a valid but non-existent article_id', () => {
+        return request(app)
+        .patch('/api/articles/999999999999999999999')
+        .send({ inc_votes: 30 })
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('Not found.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when not given a body of patch', () => {
+        return request(app)
+        .patch('/api/articles/8')
+        .send({})
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+})
+
+describe('POST /api/articles/:article_id/comments', () => {
+    test('POST: 201 posts a comment for an article and responds with the posted comment', () => {
+        const comment = { 
+            username: 'lurker',
+            body: 'Excellent article, well written.'
+        };
+        return request(app)
+        .post('/api/articles/13/comments')
+        .send(comment)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.comment).toEqual(expect.objectContaining({
+                comment_id: 19,
+                body: 'Excellent article, well written.',
+                article_id: 13,
+                author: 'lurker',
+                votes: 0,
+                created_at: expect.any(String)
+                })
+              );
+      });
+    })
+    test('POST: 201 posts a comment for an article and responds with the posted comment', () => {
+        const comment = { 
+            username: 'lurker',
+            body: 'Excellent article, well written.'
+        };
+        return request(app)
+        .post('/api/articles/13/comments')
+        .send(comment)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.comment).toEqual(expect.objectContaining({
+                body: 'Excellent article, well written.',
+                author: 'lurker',
+                })
+              );
+      });
+    })
+    test('POST: 400 sends an appropriate status and error message when given username that does not exists', () => {
+        let comment = { 
+            username: 'mitch',
+            body: 'Excellent article, well written.'
+        };
+        return request(app)
+        .post('/api/articles/13/comments')
+        .send(comment)
+        .expect(404)
+        .then((response) => {
+        expect(response.body.msg).toBe('Not found.');
+      });
+    });
+    test('POST: 400 sends an appropriate status and error message when not given body', () => {
+        let comment = { 
+            username: 'mitch'
+        };
+        return request(app)
+        .post('/api/articles/13/comments')
+        .send(comment)
+        .expect(400)
+        .then((response) => {
+        expect(response.body.msg).toBe('Bad request.');
+      });
+    })
+    test('POST: 404 sends an appropriate status and error message when given a valid but non-existent article id', () => {
+        let comment = { 
+            username: 'lurker',
+            body: 'Excellent article, well written.'
+        };
+        return request(app)
+        .post('/api/articles/13423245355/comments')
+        .send(comment)
+        .expect(404)
+        .then((response) => {
+        expect(response.body.msg).toBe('Not found.');
+      });
+    })
+    test('POST: 404 sends an appropriate status and error message when given an invalid article id', () => {
+        let comment = { 
+            username: 'lurker',
+            body: 'Excellent article, well written.'
+        };
+        return request(app)
+        .post('/api/articles/not-in-id/comments')
+        .send(comment)
+        .expect(400)
+        .then((response) => {
+        expect(response.body.msg).toBe('Bad request.');
+      });
+    })
+})
