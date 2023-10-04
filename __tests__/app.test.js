@@ -194,7 +194,7 @@ describe('PATCH /api/articles/:article_id', () => {
         .send({ inc_votes: 5 })
         .expect(200)
         .then((response) => {
-            expect(response.body.article).toEqual(expect.objectContaining({
+            expect(response.body.article[0]).toEqual(expect.objectContaining({
                     article_id: 3,
                     title: "Eight pug gifs that remind me of mitch",
                     topic: "mitch",
@@ -213,7 +213,7 @@ describe('PATCH /api/articles/:article_id', () => {
         .send({ inc_votes: -20 })
         .expect(200)
         .then((response) => {
-            expect(response.body.article).toEqual(expect.objectContaining({
+            expect(response.body.article[0]).toEqual(expect.objectContaining({
                     article_id: 8,
                     title: "Does Mitch predate civilisation?",
                     topic: "mitch",

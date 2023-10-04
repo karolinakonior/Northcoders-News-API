@@ -67,11 +67,9 @@ exports.updateArticle = (articleID, votesToAdd) => {
 
         return db.query(`UPDATE articles 
                         SET votes = $1
-                        WHERE article_id = $2;`, [totalVotes, articleID])
-    }).then(() => {
-        return db.query(`SELECT * FROM articles
-                        WHERE article_id = $1;`, [articleID])
-    }).then(({ rows }) => {
-        return rows[0];
+                        WHERE article_id = $2
+                        RETURNING *;`, [totalVotes, articleID])
+    }).then(({rows}) => {
+        return rows;
     })
 }
