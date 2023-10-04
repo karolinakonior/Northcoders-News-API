@@ -5,7 +5,9 @@ const { getTopics,
         getEndpoints,
         getArticleByID,
         getArticles,
-        postComment
+        postComment,
+        getCommentsByArticleId,
+        getUsers
       } = require('./controllers/app.controllers')
 
 app.use(express.json());
@@ -21,6 +23,8 @@ app.get('/api/articles/:article_id', getArticleByID);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 
 app.post('/api/articles/:article_id/comments', postComment)
+
+app.get('/api/users', getUsers)
 
 
 app.all('/*', (req, res, next) => {
