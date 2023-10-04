@@ -56,3 +56,20 @@ exports.insertComment = (username, body, articleId) => {
     })
 }
 
+
+
+exports.updateArticle = (articleID, votesToAdd) => {
+    return db.query(`SELECT votes FROM articles
+                    WHERE article_id = $1;`, [articleID])
+    .then(({ rows }) => {
+        const currentVotes = rows[0].votes;
+        const totalVotes = currentVotes + votesToAdd;
+
+        return db.query(`UPDATE articles 
+                        SET votes = $1
+                        WHERE article_id = $2
+                        RETURNING *;`, [totalVotes, articleID])
+    }).then(({rows}) => {
+        return rows[0];
+    })
+}
