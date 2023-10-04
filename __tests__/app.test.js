@@ -410,3 +410,23 @@ describe('POST /api/articles/:article_id/comments', () => {
       });
     })
 })
+
+describe('GET /api/users', () => {
+    test('GET: 200 sends an array of all users to the client', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(response => {
+            response.body.users.forEach(user => {
+                expect(user).toEqual(expect.objectContaining({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url: expect.any(String)
+                    })
+                  );
+            })
+            expect(response.body.users).toHaveLength(4);
+            expect(typeof response.body.users).toBe('object');
+        })
+    })
+})

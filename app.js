@@ -8,7 +8,8 @@ const { getTopics,
         getArticles,
         deleteComment,
         patchArticle,
-        postComment
+        postComment,
+        getUsers
       } = require('./controllers/app.controllers')
 
 app.use(express.json());
@@ -24,6 +25,8 @@ app.get('/api/articles/:article_id', getArticleByID);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 
 app.post('/api/articles/:article_id/comments', postComment)
+
+app.get('/api/users', getUsers)
 
 app.delete('/api/comments/:comment_id', deleteComment)
 

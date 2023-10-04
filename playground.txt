@@ -42,10 +42,13 @@ You are now connected to database "nc_news_test" as user "karolinakonior".
          16 | This is a bad article name                                                                                                                                                           |          6 | butter_bridge |     1 | 2020-10-11 16:23:00
          17 | The owls are not what they seem.                                                                                                                                                     |          9 | icellusedkars |    20 | 2020-03-14 17:02:00
          18 | This morning, I showered for nine minutes.                                                                                                                                           |          1 | butter_bridge |    16 | 2020-07-21 01:20:00
-(17 rows)
+(18 rows)
 
- comment_id | votes |     created_at      |    author     |                                                     body                                                     | article_id 
-------------+-------+---------------------+---------------+--------------------------------------------------------------------------------------------------------------+------------
-         14 |    16 | 2020-06-09 06:00:00 | icellusedkars | What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge. |          5
-(1 row)
+   username    |    name    |                                avatar_url                                 
+---------------+------------+---------------------------------------------------------------------------
+ butter_bridge | jonny      | https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg
+ icellusedkars | sam        | https://avatars2.githubusercontent.com/u/24604688?s=460&v=4
+ rogersop      | paul       | https://avatars2.githubusercontent.com/u/24394918?s=400&v=4
+ lurker        | do_nothing | https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png
+(4 rows)
 

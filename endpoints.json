@@ -96,5 +96,16 @@
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment by comment_id",
     "queries": ["comment_id"]
+    },
+    "GET /api/users": {
+      "description": "serves an array of all users",
+      "queries": [],
+      "exampleResponse": {
+        "topics": [{
+          "username": "lurker",
+          "name": "do_nothing",
+          "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+        }]
+      }
   }
 }
