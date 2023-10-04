@@ -2,7 +2,9 @@ const { fetchTopics,
         fetchArticleById,
         fetchCommentsByArticleId,
         fetchArticles,
+        findAndDeleteComment,
         insertComment,
+        updateArticle,
         fetchUsers
       } = require("../models/app.models")
 
@@ -54,6 +56,16 @@ exports.getArticles = (req, res, next) => {
     })
 }
 
+exports.deleteComment = (req, res, next) => {
+    const commentID = req.params.comment_id;
+    findAndDeleteComment(commentID).then((result) => {
+        res.status(204).send()
+    })
+    .catch(err => {
+        next(err)
+    })
+}
+
 exports.postComment = (req, res, next) => {
     const body = req.body.body;
     const articleId = req.params.article_id;
@@ -76,3 +88,15 @@ exports.getUsers = (req, res, next) => {
     })
 }
 
+
+exports.patchArticle = (req, res, next) => {
+    const articleID = req.params.article_id;
+    const votesToAdd = req.body.inc_votes;
+
+    updateArticle(articleID, votesToAdd).then(article => {
+        res.status(200).send({ article })
+    })
+    .catch(err => {
+        next(err)
+    })
+}

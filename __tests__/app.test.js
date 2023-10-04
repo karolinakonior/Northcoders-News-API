@@ -12,7 +12,7 @@ afterAll(()=>{
 })
 
 describe('Invalid path - error handling', () => {
-    test('404 - sends appropriate message when path entered by a client does not exists', () => {
+    test('404 - sends appropriate message when path entered by a client does not exist', () => {
         return request(app)
         .get('/api/tresdgtriwjpic')
         .expect(404)
@@ -183,6 +183,138 @@ describe('GET /api/articles', () => {
                     })
                   );
             })
+        })
+    })
+})
+
+describe('DELETE /api/comments/:comment_id', () => {
+    test('DELETE: 204 deletes the comment by comment id', () => {
+        return request(app)
+        .delete('/api/comments/15')
+        .expect(204)
+    })
+    test('DELETE: 404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+        return request(app)
+        .delete('/api/comments/9999999999999999999')
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe('Not found.');
+        })
+    })
+    test('DELETE: 400 sends an appropriate status and error message when given an invalid id', () => {
+        return request(app)
+        .delete('/api/comments/invalid-id')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+})
+
+describe('PATCH /api/articles/:article_id', () => {
+    test('PATCH: 200 sends an array of an article with updated votes by a positive number', () => {
+        return request(app)
+        .patch('/api/articles/3')
+        .send({ inc_votes: 5 })
+        .expect(200)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                    article_id: 3,
+                    title: "Eight pug gifs that remind me of mitch",
+                    topic: "mitch",
+                    author: "icellusedkars",
+                    body: "some gifs",
+                    created_at: expect.any(String),
+                    votes: 5,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                })
+              );
+        })
+    })
+    test('PATCH: 200 sends an array of an article with updated votes by a negative number', () => {
+        return request(app)
+        .patch('/api/articles/8')
+        .send({ inc_votes: -20 })
+        .expect(200)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                    article_id: 8,
+                    title: "Does Mitch predate civilisation?",
+                    topic: "mitch",
+                    author: "icellusedkars",
+                    body: "Archaeologists have uncovered a gigantic statue from the dawn of humanity, and it has an uncanny resemblance to Mitch. Surely I am not the only person who can see this?!",
+                    created_at: expect.any(String),
+                    votes: -20,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                })
+              );
+        })
+    })
+    test('PATCH: 200 sends an array of an article with updated votes by a positive number when sent body with extra keys', () => {
+        return request(app)
+        .patch('/api/articles/3')
+        .send({ 
+            inc_votes: 5,
+            title: "Does Mitch predate civilisation?"
+         })
+        .expect(200)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                    article_id: 3,
+                    title: "Eight pug gifs that remind me of mitch",
+                    topic: "mitch",
+                    author: "icellusedkars",
+                    body: "some gifs",
+                    created_at: expect.any(String),
+                    votes: 5,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+                })
+              );
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given an invalid body of the patch (property name)', () => {
+        return request(app)
+        .patch('/api/articles/8')
+        .send({ inc_ves: -20 })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given an invalid body of the patch (value)', () => {
+        return request(app)
+        .patch('/api/articles/8')
+        .send({ inc_votes: "I am a string" })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given an invalid article_id', () => {
+        return request(app)
+        .patch('/api/articles/invalid-id')
+        .send({ inc_votes: 30 })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given a valid but non-existent article_id', () => {
+        return request(app)
+        .patch('/api/articles/999999999999999999999')
+        .send({ inc_votes: 30 })
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('Not found.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when not given a body of patch', () => {
+        return request(app)
+        .patch('/api/articles/8')
+        .send({})
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
         })
     })
 })
