@@ -16,6 +16,18 @@ exports.fetchArticleById = (articleID) => {
     })
 }
 
+exports.fetchCommentsByArticleId = (articleId) => {
+    return db.query(`SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body, comments.article_id FROM comments
+    LEFT JOIN articles
+    ON comments.article_id = articles.article_id
+    WHERE articles.article_id = $1
+    ORDER BY comments.created_at DESC;`, [articleId])
+    .then(({rows}) => {
+        return rows;
+    })
+    
+}
+
 exports.fetchArticles = () => {
     return db.query(`SELECT CAST(COUNT(comments) AS INT) AS comment_count, articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url FROM articles
     LEFT JOIN comments 
@@ -43,3 +55,4 @@ exports.insertComment = (username, body, articleId) => {
         return result.rows[0]
     })
 }
+
