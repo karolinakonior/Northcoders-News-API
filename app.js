@@ -48,8 +48,11 @@ app.use((err, req, res, next) => {
   })  
 
  app.use((err, req, res, next) => {
-    if (err.status === 400) {
+    if (err.status === 404) {
       res.status(404).send(err.msg)
+    }
+    if (err.status === 400) {
+      res.status(400).send(err.msg)
     }
  })
   

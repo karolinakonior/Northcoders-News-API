@@ -14,7 +14,7 @@
   },
   "GET /api/articles/:article_id": {
     "description": "serves an array of one article by article_id",
-    "queries": ["article_id"],
+    "queries": [],
     "exampleResponse": {
       "articles": [
         {
@@ -32,7 +32,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["topic"],
+    "queries": ["topic", "order", "sort_by"],
     "exampleResponse": {
       "articles": [
         {
@@ -49,7 +49,7 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of all comments of an article",
-    "queries": ["article_id"],
+    "queries": [],
     "exampleResponse": {
       "comments": [{
         "comment_id": 14,
@@ -63,7 +63,7 @@
   },
   "PATCH /api/articles/:article_id": {
     "description": "serves an array of an article updated by votes",
-    "queries": ["article_id"],
+    "queries": [],
     "exampleResponse": {
       "article" : [{
       "article_id": 3,
@@ -79,7 +79,7 @@
   },
     "POST /api/articles/:article_id/comments": {
     "description": "serves an array of posted comment to the selected article",
-    "queries": ["article_id"],
+    "queries": [],
     "exampleResponse": {
       "articles": [
         {
@@ -95,7 +95,7 @@
     },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment by comment_id",
-    "queries": ["comment_id"]
+    "queries": []
     },
     "GET /api/users": {
       "description": "serves an array of all users",
