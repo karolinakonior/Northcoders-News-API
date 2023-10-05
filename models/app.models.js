@@ -29,27 +29,32 @@ exports.fetchCommentsByArticleId = (articleId) => {
 }
 
 exports.fetchArticles = (topic, sortBy = 'created_at') => {
-    console.log(sortBy)
    return db.query(`SELECT slug FROM topics`)
     .then(({rows}) => {
         return rows.map(row => row.slug)
     }).then(existingTopics => {
-    
+
+    const validSortBy = [ 'article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_img_url'];
+
+    if (!validSortBy.includes(sortBy)) {
+        return Promise.reject({status: 404, msg: "Not found."})
+    }
 
     let queryString = `
     SELECT CAST(COUNT(comments) AS INT) AS comment_count, articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url FROM articles
     LEFT JOIN comments 
     ON articles.article_id = comments.article_id
     `
-   
+
     if (topic) {
+   
         if (existingTopics.includes(topic)) {
             queryString += `WHERE topic = '${topic}'`;
         } else {
-            return Promise.reject({status: 400, msg: "Not found."})
+            return Promise.reject({status: 404, msg: "Not found."})
         }
     }
-    
+ 
     queryString += ` GROUP BY articles.article_id ORDER BY ${sortBy} DESC;`
 
     return db.query(queryString)

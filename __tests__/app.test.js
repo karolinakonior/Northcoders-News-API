@@ -325,14 +325,30 @@ describe.only('GET /api/articles', () => {
            expect(response.text).toBe('Not found.')
         })
     })
-    // test.only('GET: 404 sends an appropriate status and error message when given a non-existent sort by', () => {
-    //     return request(app)
-    //     .get('/api/articles?sort_by=invalid-sort-by')
-    //     .expect(404)
-    //     .then((response) => {
-    //        expect(response.text).toBe('Not found.')
-    //     })
-    // })
+    test('GET: 404 sends an appropriate status and error message when given a non-existent sort by', () => {
+        return request(app)
+        .get('/api/articles?sort_by=invalid-sort-by')
+        .expect(404)
+        .then((response) => {
+           expect(response.text).toBe('Not found.')
+        })
+    })
+    test('GET: 404 sends an appropriate status and error message when given a valid sort by and non-existent topic', () => {
+        return request(app)
+        .get('/api/articles?sort_by=author&topic=not-a-topic')
+        .expect(404)
+        .then((response) => {
+           expect(response.text).toBe('Not found.')
+        })
+    })
+    test('GET: 404 sends an appropriate status and error message when given a valid topic and non-existent sort_by', () => {
+        return request(app)
+        .get('/api/articles?sort_by=invalid-sort-by&topic=mitch')
+        .expect(404)
+        .then((response) => {
+           expect(response.text).toBe('Not found.')
+        })
+    })
 })
 
 describe('DELETE /api/comments/:comment_id', () => {

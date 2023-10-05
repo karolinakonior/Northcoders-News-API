@@ -49,10 +49,6 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
     const topic = req.query.topic;
     const sortBy = req.query.sort_by;
-    // return db.query(`SELECT column_name
-    //     FROM information_schema.columns
-    //     WHERE table_schema = 'public' AND table_name = 'articles';`)
-
 
     fetchArticles(topic, sortBy).then((articles) => {
         res.status(200).send({ articles })
