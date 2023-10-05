@@ -189,7 +189,7 @@ describe('GET /api/articles/:article_id/comments', () => {
 })
 
 
-describe.only('GET /api/articles', () => {
+describe('GET /api/articles', () => {
     test('GET: 200 sends and array of all articles to the client sorted by date in descending order', () => {
         return request(app)
         .get('/api/articles')
@@ -314,6 +314,31 @@ describe.only('GET /api/articles', () => {
             })
         })
     })
+    test('GET: 200 accepts an order query and sends an array of sorted articles in ascending order (defaulting to descending when order is not provided)', () => {
+        return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('created_at', { ascending: true });
+            expect(response.body.articles).toHaveLength(13);
+            response.body.articles.forEach(article => {
+                expect(typeof article).toBe('object');
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    })
+                  );
+            })
+        })
+    })
     test('GET: 200 sends and array of all articles to the client sorted by date in descending order when the query is misspelt', () => {
         return request(app)
         .get('/api/articles?invalid-query=dogs')
@@ -328,6 +353,31 @@ describe.only('GET /api/articles', () => {
                         article_id: expect.any(Number),
                         title: expect.any(String),
                         topic: expect.any(String),
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    })
+                  );
+            })
+        })
+    })
+    test('GET: 200 sends and array of all articles to the client of mitch topic sorted by author in ascending order', () => {
+        return request(app)
+        .get('/api/articles?topic=mitch&order=asc&sort_by=author')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('author', { ascending: true });
+            expect(response.body.articles).toHaveLength(12);
+            response.body.articles.forEach(article => {
+                expect(typeof article).toBe('object');
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: 'mitch',
                         author: expect.any(String),
                         created_at: expect.any(String),
                         votes: expect.any(Number),
@@ -354,12 +404,12 @@ describe.only('GET /api/articles', () => {
            expect(response.text).toBe('Not found.')
         })
     })
-    test('GET: 404 sends an appropriate status and error message when given a non-existent sort by', () => {
+    test('GET: 400 sends an appropriate status and error message when given an invalid sort by', () => {
         return request(app)
         .get('/api/articles?sort_by=invalid-sort-by')
-        .expect(404)
+        .expect(400)
         .then((response) => {
-           expect(response.text).toBe('Not found.')
+           expect(response.text).toBe('Bad request.')
         })
     })
     test('GET: 404 sends an appropriate status and error message when given a valid sort by and non-existent topic', () => {
@@ -370,12 +420,20 @@ describe.only('GET /api/articles', () => {
            expect(response.text).toBe('Not found.')
         })
     })
-    test('GET: 404 sends an appropriate status and error message when given a valid topic and non-existent sort_by', () => {
+    test('GET: 400 sends an appropriate status and error message when given a valid topic and non-existent sort_by', () => {
         return request(app)
         .get('/api/articles?sort_by=invalid-sort-by&topic=mitch')
-        .expect(404)
+        .expect(400)
         .then((response) => {
-           expect(response.text).toBe('Not found.')
+           expect(response.text).toBe('Bad request.')
+        })
+    })
+    test('GET: 400 sends an appropriate status and error message when given an ivalid order', () => {
+        return request(app)
+        .get('/api/articles?order=invalid-order')
+        .expect(400)
+        .then((response) => {
+           expect(response.text).toBe('Bad request.')
         })
     })
 })

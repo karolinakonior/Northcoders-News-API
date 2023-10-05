@@ -33,16 +33,22 @@ exports.fetchCommentsByArticleId = (articleId) => {
     
 }
 
-exports.fetchArticles = (topic, sortBy = 'created_at') => {
+exports.fetchArticles = (topic, sortBy = 'created_at', order = 'desc') => {
    return db.query(`SELECT slug FROM topics`)
     .then(({rows}) => {
         return rows.map(row => row.slug)
     }).then(existingTopics => {
-
+   
     const validSortBy = [ 'article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_img_url'];
 
+    const validOrder = ['asc', 'desc']
+
     if (!validSortBy.includes(sortBy)) {
-        return Promise.reject({status: 404, msg: "Not found."})
+        return Promise.reject({status: 400, msg: "Bad request."})
+    }
+
+    if(!validOrder.includes(order)) {
+        return Promise.reject({status: 400, msg: "Bad request."})
     }
 
     let queryString = `
@@ -60,7 +66,7 @@ exports.fetchArticles = (topic, sortBy = 'created_at') => {
         }
     }
  
-    queryString += ` GROUP BY articles.article_id ORDER BY ${sortBy} DESC;`
+    queryString += ` GROUP BY articles.article_id ORDER BY ${sortBy} ${order};`
 
     return db.query(queryString)
     .then(({rows}) => {

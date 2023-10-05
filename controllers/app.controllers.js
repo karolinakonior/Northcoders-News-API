@@ -49,8 +49,9 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
     const topic = req.query.topic;
     const sortBy = req.query.sort_by;
+    const order = req.query.order;
 
-    fetchArticles(topic, sortBy).then((articles) => {
+    fetchArticles(topic, sortBy, order).then((articles) => {
         res.status(200).send({ articles })
     })
     .catch((err) => {
