@@ -47,6 +47,12 @@ app.use((err, req, res, next) => {
     next(err);
   })  
 
+ app.use((err, req, res, next) => {
+    if (err.status === 400) {
+      res.status(404).send(err.msg)
+    }
+ })
+  
 app.use((err, req, res, next) => {
       res.status(500).send({ msg: 'The server encountered an unexpected condition that prevented it from fulfilling the request.' })
   })

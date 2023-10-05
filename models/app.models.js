@@ -28,16 +28,36 @@ exports.fetchCommentsByArticleId = (articleId) => {
     
 }
 
-exports.fetchArticles = () => {
-    return db.query(`SELECT CAST(COUNT(comments) AS INT) AS comment_count, articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url FROM articles
+exports.fetchArticles = (topic) => {
+    return db.query(`SELECT slug FROM topics`)
+    .then(({rows}) => {
+        return rows.map(row => row.slug)
+    }).then(existingTopics => {
+    const queryValues = []
+
+    let queryString = `
+    SELECT CAST(COUNT(comments) AS INT) AS comment_count, articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url FROM articles
     LEFT JOIN comments 
     ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;`
-    )
+    `
+   
+    if (topic) {
+        if (existingTopics.includes(topic)) {
+            queryValues.push(topic);
+            queryString += ` WHERE topic = $1`;
+        } else {
+            return Promise.reject({status: 400, msg: "Not found."})
+        }
+    }
+    
+    queryString += ` GROUP BY articles.article_id
+                    ORDER BY articles.created_at DESC;`
+                    
+    return db.query(queryString, queryValues)
     .then(({rows}) => {
         return rows;
     })
+})
 }
 
 exports.insertComment = (username, body, articleId) => {
