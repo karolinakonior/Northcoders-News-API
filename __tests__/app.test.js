@@ -702,3 +702,96 @@ describe('GET /api/users/:username', () => {
         })
     })
 })
+
+describe('PATCH /api/comments/:comment_id', () => {
+    test('PATCH: 200 sends an array of a comment with updated votes by a positive number', () => {
+        return request(app)
+        .patch('/api/comments/2')
+        .send({ inc_votes: 7 })
+        .expect(200)
+        .then(response => {
+            expect(response.body.comment).toEqual(expect.objectContaining({
+                comment_id: 2,
+                body: 'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+                article_id: 1,
+                author: 'butter_bridge',
+                votes: 21,
+                created_at: '2020-10-31T03:03:00.000Z'
+            })
+          )
+        })
+    })
+    test('PATCH: 200 sends an array of a comment with updated votes by a negative number', () => {
+        return request(app)
+        .patch('/api/comments/2')
+        .send({ inc_votes: -15 })
+        .expect(200)
+        .then(response => {
+            expect(response.body.comment).toEqual(expect.objectContaining({
+                comment_id: 2,
+                body: 'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+                article_id: 1,
+                author: 'butter_bridge',
+                votes: -1,
+                created_at: '2020-10-31T03:03:00.000Z'
+            })
+          )
+        })
+    })
+    test('PATCH: 200 sends an array of a comment with updated votes when sent body with extra keys', () => {
+        return request(app)
+        .patch('/api/comments/18')
+        .send({ 
+            inc_votes: 4,
+            author: 'mitch'
+        })
+        .expect(200)
+        .then(response => {
+            expect(response.body.comment).toEqual(expect.objectContaining({
+                comment_id: 18,
+                body: 'This morning, I showered for nine minutes.',
+                article_id: 1,
+                author: 'butter_bridge',
+                votes: 20,
+                created_at: '2020-07-21T00:20:00.000Z'
+            })
+          )
+        })
+    })
+    test('PATCH: 404 sends an appropriate status and error message when given a non-existent comment id', () => {
+        return request(app)
+        .patch('/api/comments/19')
+        .send({ inc_ves: -20 })
+        .expect(404)
+        .then((response) => {
+            expect(response.text).toBe('Not found.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given an empty body of patch', () => {
+        return request(app)
+        .patch('/api/comments/18')
+        .send({})
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given an incorrect property name in the body of patch', () => {
+        return request(app)
+        .patch('/api/comments/18')
+        .send({ incorrect_name: -20 })
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+    test('PATCH: 400 sends an appropriate status and error message when given an incorrect value of votes in the body of patch', () => {
+        return request(app)
+        .patch('/api/comments/18')
+        .send({ inc_ves: 'Not a number'})
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Bad request.');
+        })
+    })
+})
