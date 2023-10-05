@@ -77,7 +77,7 @@ describe('GET /api', () => {
     })
 })
 
-describe.only('GET /api/articles/:article_id', () => {
+describe('GET /api/articles/:article_id', () => {
     test('GET: 200 sends an array with article of correct ID', () => {
         return request(app)
         .get('/api/articles/2')
@@ -190,7 +190,7 @@ describe('GET /api/articles/:article_id/comments', () => {
 
 
 describe('GET /api/articles', () => {
-    test('GET: 200 sends and array of articles to the client sorted by date in descending order', () => {
+    test('GET: 200 sends and array of all articles to the client sorted by date in descending order', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
@@ -212,6 +212,96 @@ describe('GET /api/articles', () => {
                     })
                   );
             })
+        })
+    })
+    test('GET: 200 accepts a topic query and sends an array of filtered topics sorted by date in descending order', () => {
+        return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('created_at', { descending: true });
+            expect(response.body.articles).toHaveLength(12);
+            response.body.articles.forEach(article => {
+                expect(typeof article).toBe('object');
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: 'mitch',
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    })
+                  );
+            })
+        })
+    })
+    test('GET: 200 accepts a topic query and sends an array of filtered topics sorted by date in descending order', () => {
+        return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('created_at', { descending: true });
+            expect(response.body.articles).toHaveLength(1);
+            response.body.articles.forEach(article => {
+                expect(typeof article).toBe('object');
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: 'cats',
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    })
+                  );
+            })
+        })
+    })
+    test('GET: 200 sends and array of all articles to the client sorted by date in descending order when the query is misspelt', () => {
+        return request(app)
+        .get('/api/articles?invalid-query=dogs')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('created_at', { descending: true });
+            response.body.articles.forEach(article => {
+                expect(typeof article).toBe('object');
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    })
+                  );
+            })
+        })
+    })
+    test('GET: 200 sends and empty array to the client when topic exists but is not associated with any article', () => {
+        return request(app)
+        .get('/api/articles?topic=paper')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toEqual([]);
+        })
+    })
+    test('GET: 404 sends an appropriate status and error message when given a non-existent topic', () => {
+        return request(app)
+        .get('/api/articles?topic=dogs')
+        .expect(404)
+        .then((response) => {
+           expect(response.text).toBe('Not found.')
         })
     })
 })
