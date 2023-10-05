@@ -160,7 +160,7 @@ describe('GET /api/articles/:article_id/comments', () => {
 })
 
 
-describe('GET /api/articles', () => {
+describe.only('GET /api/articles', () => {
     test('GET: 200 sends and array of all articles to the client sorted by date in descending order', () => {
         return request(app)
         .get('/api/articles')
@@ -235,6 +235,56 @@ describe('GET /api/articles', () => {
             })
         })
     })
+    test('GET: 200 accepts a sort by query and sends an array of all articles sorted by date in descending order', () => {
+        return request(app)
+        .get('/api/articles?sort_by=author')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('author', { descending: true });
+            expect(response.body.articles).toHaveLength(13);
+            response.body.articles.forEach(article => {
+                expect(typeof article).toBe('object');
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    })
+                  );
+            })
+        })
+    })
+    test('GET: 200 accepts a sort by and topic query and sends an array of all arrays sorted by date in descending order', () => {
+        return request(app)
+        .get('/api/articles?sort_by=author&topic=mitch')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('author', { descending: true });
+            expect(response.body.articles).toHaveLength(12);
+            response.body.articles.forEach(article => {
+                expect(typeof article).toBe('object');
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: 'mitch',
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    })
+                  );
+            })
+        })
+    })
     test('GET: 200 sends and array of all articles to the client sorted by date in descending order when the query is misspelt', () => {
         return request(app)
         .get('/api/articles?invalid-query=dogs')
@@ -275,6 +325,14 @@ describe('GET /api/articles', () => {
            expect(response.text).toBe('Not found.')
         })
     })
+    // test.only('GET: 404 sends an appropriate status and error message when given a non-existent sort by', () => {
+    //     return request(app)
+    //     .get('/api/articles?sort_by=invalid-sort-by')
+    //     .expect(404)
+    //     .then((response) => {
+    //        expect(response.text).toBe('Not found.')
+    //     })
+    // })
 })
 
 describe('DELETE /api/comments/:comment_id', () => {
