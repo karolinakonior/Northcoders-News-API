@@ -118,3 +118,23 @@ exports.findAndDeleteComment = (commentID) => {
     return db.query(`DELETE FROM comments
                      WHERE comment_id = $1;`, [commentID])
 }
+
+exports.fetchUsername = (username) => {
+    return db.query(`SELECT username FROM users;`)
+    .then(({ rows }) => {
+        return rows.map(username => username.username);
+    })
+    .then(existingUsernames => {
+
+        if(!existingUsernames.includes(username)) {
+            return Promise.reject({status: 404, msg: "Not found."})
+        }
+
+        return db.query(`
+        SELECT * FROM users
+        WHERE username = $1`, [username])
+    })
+    .then(({rows}) => {
+        return rows[0];
+    })
+}
