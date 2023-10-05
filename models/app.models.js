@@ -138,3 +138,23 @@ exports.fetchUsername = (username) => {
         return rows[0];
     })
 }
+
+exports.updateComment = (commentID, votesToAdd) => {
+
+    return db.query(`SELECT * FROM comments
+                    WHERE comment_id = $1;`, [commentID])
+    .then(({ rows }) => {
+        if(rows[0] === undefined) {
+            return Promise.reject({status: 404, msg: "Not found."})
+        }
+        const currentVotes = rows[0].votes;
+        const totalVotes = currentVotes + votesToAdd
+      
+        return db.query(`UPDATE comments
+                        SET votes = $1
+                        WHERE comment_id = $2
+                        RETURNING *;`, [totalVotes, commentID])
+    }).then(({rows}) => {
+        return rows[0];
+    })
+}
