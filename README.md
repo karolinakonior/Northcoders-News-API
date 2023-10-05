@@ -2,7 +2,7 @@
 
 Northcoders News API is built for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as Reddit) which should provide this information to the front end architecture.
 
-##LINK TO THE HOSTED VERSION OF NORTHCODERS NEWS API CAN BE FOUND HERE: ...............
+##LINK TO THE HOSTED VERSION OF NORTHCODERS NEWS API CAN BE FOUND HERE: https://northcoders-news-api-ibfk.onrender.com
 
 If you wish to contribute to this repository please follow this steps.
 
