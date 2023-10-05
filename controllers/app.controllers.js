@@ -5,7 +5,8 @@ const { fetchTopics,
         findAndDeleteComment,
         insertComment,
         updateArticle,
-        fetchUsers
+        fetchUsers,
+        fetchUsername
       } = require("../models/app.models")
 
 const endpoints = require('../endpoints.json')
@@ -98,6 +99,16 @@ exports.patchArticle = (req, res, next) => {
 
     updateArticle(articleID, votesToAdd).then(article => {
         res.status(200).send({ article })
+    })
+    .catch(err => {
+        next(err)
+    })
+}
+
+exports.getUsername = (req, res, next) => {
+    const username = req.params.username
+    fetchUsername(username).then(user => {
+        res.status(200).send({user})
     })
     .catch(err => {
         next(err)

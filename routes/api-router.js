@@ -1,22 +1,25 @@
 const apiRouter = require('express').Router();
 const articlesRouter = require('./articles-router')
-const express = require('express')
+const usersRouter = require('./users-router');
 
 const { getTopics,
-    getEndpoints,
-    deleteComment,
-    getUsers
-  } = require('../controllers/app.controllers')
-
+        getEndpoints,
+        deleteComment
+  } = require('../controllers/app.controllers');
 
 apiRouter.use('/articles', articlesRouter)
+apiRouter.use('/users', usersRouter)
 
-apiRouter.get('/', getEndpoints);
+apiRouter
+ .route('/')
+ .get(getEndpoints)
 
-apiRouter.get('/topics', getTopics);
+apiRouter
+  .route('/topics')
+  .get(getTopics)
 
-apiRouter.get('/users', getUsers)
-
-apiRouter.delete('/comments/:comment_id', deleteComment)
+apiRouter
+  .route('/comments/:comment_id')
+  .delete(deleteComment)
 
 module.exports = apiRouter;
