@@ -797,7 +797,7 @@ describe('PATCH /api/comments/:comment_id', () => {
     })
 })
 
-describe.only('POST /api/articles', () => {
+describe('POST /api/articles', () => {
     test('POST: 201 posts an article and responds with the posted article - article img url defaults when not provided', () => {
         const article = { 
             author: "rogersop",
