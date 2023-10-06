@@ -162,6 +162,104 @@ describe('GET /api/articles/:article_id/comments', () => {
             })
         })
     })
+    test('GET: 200 accepts a query of limit and sends an array of selected comments of an article', () => {
+        return request(app)
+        .get('/api/articles/1/comments?limit=5')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toBeSortedBy('created_at', { descending: true });
+            expect(response.body.comments.length).toBe(5);
+            response.body.comments.forEach(comment => {
+                expect(comment).toEqual(expect.objectContaining({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: expect.any(Number)
+                }))
+            })
+        })
+    })
+    test('GET: 200 accepts a query of p (page number) and sends an array of selected comments of an article', () => {
+        return request(app)
+        .get('/api/articles/1/comments?p=2')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toBeSortedBy('created_at', { descending: true });
+            expect(response.body.comments.length).toBe(1);
+                expect(response.body.comments[0]).toEqual(expect.objectContaining({
+                    comment_id: 9,
+                    votes: 0,
+                    created_at: expect.any(String),
+                    author: 'icellusedkars',
+                    body: 'Superficially charming',
+                    article_id: 1
+                }))
+            
+        })
+    })
+    test('GET: 200 accepts queries of p (page number) and limit and sends an array of all comments of an article', () => {
+        return request(app)
+        .get('/api/articles/1/comments?limit=10&p=2')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments.length).toBe(1);
+            expect(response.body.comments[0]).toEqual(expect.objectContaining({
+                comment_id: 9,
+                votes: 0,
+                created_at: expect.any(String),
+                author: 'icellusedkars',
+                body: 'Superficially charming',
+                article_id: 1
+                }))
+            
+        })
+    })
+    test('GET: 200 accepts queries of p (page number) and limit and sends an array of all comments of an article', () => {
+        return request(app)
+        .get('/api/articles/1/comments?limit=2&p=6')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toBeSortedBy('created_at', { descending: true });
+            expect(response.body.comments.length).toBe(1);
+            expect(response.body.comments[0]).toEqual({
+                comment_id: 9,
+                votes: 0,
+                created_at: expect.any(String),
+                author: 'icellusedkars',
+                body: 'Superficially charming',
+                article_id: 1
+            })
+        })
+    })
+    test('GET: 200 accepts a limit query and sends an array of all comments of an article if limit is bigger than the comment count', () => {
+        return request(app)
+        .get('/api/articles/1/comments?limit=30')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toBeSortedBy('created_at', { descending: true });
+            expect(response.body.comments.length).toBe(11);
+            response.body.comments.forEach(comment => {
+                expect(comment).toEqual(expect.objectContaining({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: expect.any(Number)
+                }))
+            })
+        })
+    })
+    test('GET: 404 sends an appropriate status and error message when given page number with no results', () => {
+        return request(app)
+        .get('/api/articles/1/comments?limit=2&p=20')
+        .expect(404)
+        .then(response => {
+            expect(response.text).toBe('Not found.');
+        })
+    })
     test('GET: 200 sends an empty array when a given valid id with no comments associated with it', () => {
         return request(app)
           .get('/api/articles/2/comments')

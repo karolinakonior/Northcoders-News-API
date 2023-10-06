@@ -21,14 +21,38 @@ exports.fetchArticleById = (articleID) => {
     })
 }
 
-exports.fetchCommentsByArticleId = (articleId) => {
+exports.fetchCommentsByArticleId = (articleId, limit, p) => {
     return db.query(`SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body, comments.article_id FROM comments
     LEFT JOIN articles
     ON comments.article_id = articles.article_id
     WHERE articles.article_id = $1
     ORDER BY comments.created_at DESC;`, [articleId])
-    .then(({rows}) => {
-        return rows;
+    .then((result) => {
+
+        if(limit > result.rowCount) {
+            return result.rows
+        }
+
+        if(limit || p) {
+            if (p) {
+            
+                if(limit === undefined) {
+                limit = 10;
+                }
+           
+                const numberOfPages = Math.ceil(result.rows.length/limit)
+
+            
+                if (p > numberOfPages) {
+                return Promise.reject({status: 404, msg: "Not found."})
+                }
+
+            return result.rows.slice((limit*p)-limit, limit * p);
+            }
+
+        return result.rows.slice(0, limit)
+        }
+        return result.rows;
     })
     
 }
@@ -87,7 +111,7 @@ exports.fetchArticles = (topic, sortBy = 'created_at', order = 'desc', limit, p)
                     return Promise.reject({status: 404, msg: "Not found."})
                 }
             
-                return result.rows.slice(limit, limit * p);
+                return result.rows.slice((limit*p)-limit, limit * p);
             }
             result.rows.length = limit;
         }
