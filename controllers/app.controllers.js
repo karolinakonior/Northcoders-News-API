@@ -8,7 +8,8 @@ const { fetchTopics,
         fetchUsers,
         fetchUsername,
         updateComment,
-        insertArticle
+        insertArticle,
+        insertTopic
       } = require("../models/app.models")
 
 const endpoints = require('../endpoints.json')
@@ -143,4 +144,17 @@ exports.postArticle = (req, res, next) => {
     .catch(err => {
         next(err)
     })
+}
+
+exports.postTopic = (req, res, next) => {
+    const slug = req.body.slug;
+    const description = req.body.description;
+
+    insertTopic(slug, description).then(topic => {
+        res.status(201).send({topic})
+    })
+    .catch(err => {
+        next(err)
+    })
+
 }

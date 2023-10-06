@@ -151,5 +151,14 @@
       "votes": 21,
       "created_at": "2020-10-31T03:03:00.000Z"
     }
+  },
+  "POST /api/topics": {
+    "description": "serves an array of a posted topic",
+    "queries": [],
+    "requiredProperties": ["slug", "description"],
+    "exampleResponse": {
+        "slug": "cars",
+        "description": "everything about cars"
+    }
   }
 }
