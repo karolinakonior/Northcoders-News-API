@@ -53,3 +53,10 @@ You are now connected to database "nc_news_test" as user "karolinakonior".
  lurker        | do_nothing | https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png
 (4 rows)
 
+ slug  
+-------
+ mitch
+ cats
+ paper
+(3 rows)
+

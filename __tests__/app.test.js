@@ -4,6 +4,7 @@ const request = require("supertest");
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data');
 
+
 beforeEach(() => {
     return seed(testData);
 });
@@ -793,5 +794,142 @@ describe('PATCH /api/comments/:comment_id', () => {
         .then((response) => {
             expect(response.body.msg).toBe('Bad request.');
         })
+    })
+})
+
+describe('POST /api/articles', () => {
+    test('POST: 201 posts an article and responds with the posted article - article img url defaults when not provided', () => {
+        const article = { 
+            author: "rogersop",
+            title: "The greatest cat of 2023",
+            body: "This article is about the greatest cat of 2023",
+            topic: "cats",
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(article)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                article_id: 14,
+                title: "The greatest cat of 2023",
+                topic: "cats",
+                author: "rogersop",
+                body: "This article is about the greatest cat of 2023",
+                created_at: expect.any(String),
+                votes: 0,
+                article_img_url: `https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700`,
+                comment_count: 0
+                })
+              );
+      });
+    })
+    test('POST: 201 posts an article and responds with the posted article', () => {
+        const article = { 
+            author: "rogersop",
+            title: "The greatest cat of 2023",
+            body: "This article is about the greatest cat of 2023",
+            topic: "cats",
+            article_img_url: "https://images.pexels.com/photos/97050"
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(article)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                article_id: 14,
+                title: "The greatest cat of 2023",
+                topic: "cats",
+                author: "rogersop",
+                body: "This article is about the greatest cat of 2023",
+                created_at: expect.any(String),
+                votes: 0,
+                article_img_url: "https://images.pexels.com/photos/97050",
+                comment_count: 0
+                })
+              );
+      });
+    })
+    test('POST: 201 posts an article and responds with the posted article when extra non-existent properties added to the body', () => {
+        const article = { 
+            author: "rogersop",
+            title: "The greatest cat of 2023",
+            body: "This article is about the greatest cat of 2023",
+            topic: "cats",
+            favourite_colour: "pink",
+            favourie_day: "Monday"
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(article)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.article).toEqual(expect.objectContaining({
+                article_id: 14,
+                title: "The greatest cat of 2023",
+                topic: "cats",
+                author: "rogersop",
+                body: "This article is about the greatest cat of 2023",
+                created_at: expect.any(String),
+                votes: 0,
+                article_img_url: expect.any(String),
+                comment_count: 0
+                })
+              );
+      });
+    })
+    test('POST: 400 sends an appropriate status and error message when given an incomplete body', () => {
+        const article = { 
+            author: "rogersop",
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(article)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("Bad request.");
+      });
+    })
+    test('POST: 400 sends an appropriate status and error message when given an empty body', () => {
+        const article = { 
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(article)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("Bad request.");
+      });
+    })
+    test('POST: 400 sends an appropriate status and error message when given an incorrect properties names in the body', () => {
+        const article = { 
+            invalid_author_name: "rogersop",
+            title: "The greatest cat of 2023",
+            body: "This article is about the greatest cat of 2023",
+            topic: "cats",
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(article)
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("Bad request.");
+      });
+    })
+    test('POST: 404 sends an appropriate status and error message when given a non-existent author', () => {
+        const article = { 
+            author: "karolina",
+            title: "The greatest cat of 2023",
+            body: "This article is about the greatest cat of 2023",
+            topic: "cats",
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(article)
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("Not found.");
+      });
     })
 })
