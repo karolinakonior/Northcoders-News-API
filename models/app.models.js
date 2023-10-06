@@ -158,3 +158,34 @@ exports.updateComment = (commentID, votesToAdd) => {
         return rows[0];
     })
 }
+
+exports.insertArticle = (sentBody, article_img_url = `https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700`) => {
+    const author = sentBody.author;
+    const body = sentBody.body;
+    const title = sentBody.title;
+    const topic = sentBody.topic;
+
+    const queryValues = [author, title, body, topic, article_img_url]
+
+    const queryString = format(`
+    INSERT INTO articles 
+    (author, title, body, topic, article_img_url) 
+    VALUES 
+    %L
+    RETURNING *;`, [queryValues])
+
+    return db.query(queryString)
+    .then(({rows}) => {
+        const article_id = rows[0].article_id
+        return db.query(`
+        SELECT CAST(COUNT(comments) AS INT) AS comment_count, articles.body, articles.article_img_url, articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url FROM articles
+        LEFT JOIN comments 
+        ON articles.article_id = comments.article_id
+        WHERE articles.article_id = ${article_id}
+        GROUP BY articles.article_id;`)
+        .then(({rows}) => {
+            return rows[0]
+        })
+    })
+  
+}

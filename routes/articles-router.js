@@ -7,6 +7,7 @@ const {
     getArticles,
     patchArticle,
     postComment,
+    postArticle
   } = require('../controllers/app.controllers')
 
 articlesRouter.use(express.json());
@@ -14,6 +15,7 @@ articlesRouter.use(express.json());
 articlesRouter
   .route('/')
   .get(getArticles)
+  .post(postArticle)
 
 articlesRouter
   .route('/:article_id/comments')

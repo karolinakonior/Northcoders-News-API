@@ -7,7 +7,8 @@ const { fetchTopics,
         updateArticle,
         fetchUsers,
         fetchUsername,
-        updateComment
+        updateComment,
+        insertArticle
       } = require("../models/app.models")
 
 const endpoints = require('../endpoints.json')
@@ -122,6 +123,18 @@ exports.patchComment = (req, res, next) => {
 
     updateComment(commentId, votesToAdd).then(comment =>
         res.status(200).send({ comment }))
+    .catch(err => {
+        next(err)
+    })
+}
+
+exports.postArticle = (req, res, next) => {
+    const body = req.body;
+    const article_img_url = req.body.article_img_url;
+
+    insertArticle(body, article_img_url).then((article) => {
+        res.status(201).send({article})
+    })
     .catch(err => {
         next(err)
     })
