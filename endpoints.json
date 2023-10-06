@@ -32,7 +32,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["topic", "order", "sort_by"],
+    "queries": ["topic", "order", "sort_by", "limit", "p"],
     "exampleResponse": {
       "articles": [
         {

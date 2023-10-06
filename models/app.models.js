@@ -33,7 +33,7 @@ exports.fetchCommentsByArticleId = (articleId) => {
     
 }
 
-exports.fetchArticles = (topic, sortBy = 'created_at', order = 'desc') => {
+exports.fetchArticles = (topic, sortBy = 'created_at', order = 'desc', limit, p) => {
    return db.query(`SELECT slug FROM topics`)
     .then(({rows}) => {
         return rows.map(row => row.slug)
@@ -69,8 +69,29 @@ exports.fetchArticles = (topic, sortBy = 'created_at', order = 'desc') => {
     queryString += ` GROUP BY articles.article_id ORDER BY ${sortBy} ${order};`
 
     return db.query(queryString)
-    .then(({rows}) => {
-        return rows;
+    .then((result) => {
+
+       result.rows.forEach(article => {
+            article.total_count = result.rowCount
+        })
+   
+        if(limit || p) {
+            if(p) {
+                if(limit === undefined) {
+                    limit = 10;
+                }
+
+                const numberOfPages = Math.ceil(result.rows.length/limit)
+                
+                if (p > numberOfPages) {
+                    return Promise.reject({status: 404, msg: "Not found."})
+                }
+            
+                return result.rows.slice(limit, limit * p);
+            }
+            result.rows.length = limit;
+        }
+        return result.rows;
     })
 })
 }
