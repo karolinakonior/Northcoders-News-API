@@ -49,7 +49,7 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of all comments of an article",
-    "queries": [],
+    "queries": ["limit", "p"],
     "exampleResponse": {
       "comments": [{
         "comment_id": 14,

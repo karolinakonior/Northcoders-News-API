@@ -5,7 +5,9 @@ SELECT * FROM topics;
 SELECT * FROM comments;
 SELECT * FROM users;
 
-SELECT CAST(COUNT(comments) AS INT) AS comment_count, articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url FROM articles
-LEFT JOIN comments 
-ON articles.article_id = comments.article_id
-GROUP BY articles.article_id ORDER BY created_at DESC;
+
+    SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body, comments.article_id FROM comments
+    LEFT JOIN articles
+    ON comments.article_id = articles.article_id
+    WHERE articles.article_id = 1
+    ORDER BY comments.created_at DESC;
