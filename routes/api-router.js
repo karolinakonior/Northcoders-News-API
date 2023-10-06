@@ -6,6 +6,7 @@ const express = require('express')
 
 const { getTopics,
         getEndpoints,
+        postTopic
   } = require('../controllers/app.controllers');
 
 apiRouter.use(express.json());
@@ -21,5 +22,6 @@ apiRouter
 apiRouter
   .route('/topics')
   .get(getTopics)
+  .post(postTopic)
 
 module.exports = apiRouter;

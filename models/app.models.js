@@ -234,3 +234,20 @@ exports.insertArticle = (sentBody, article_img_url = `https://images.pexels.com/
     })
   
 }
+
+exports.insertTopic = (slug, description) => {
+
+    const queryValues = [slug, description]
+
+    const queryString = format(`
+    INSERT INTO topics
+    (slug, description)
+    VALUES
+    %L
+    RETURNING *;`, [queryValues])
+
+    return db.query(queryString)
+    .then(({rows}) => {
+        return rows[0];
+    })
+}

@@ -1174,3 +1174,78 @@ describe('POST /api/articles', () => {
       });
     })
 })
+
+describe('POST /api/topics', () => {
+    test('POST: 201 posts a topic and responds with posted topic', () => {
+        const topic = {
+            "slug": "cars",
+            "description": "everything about cars"
+        }
+        return request(app)
+        .post('/api/topics')
+        .send(topic)
+        .expect(201)
+        .then(response => {
+            expect(response.body.topic).toEqual(expect.objectContaining({
+                "slug": "cars",
+                "description": "everything about cars"
+                })
+              );
+        })
+    })
+    test('POST: 201 posts a topic with omitted description and responds with posted topic', () => {
+        const topic = {
+            "slug": "cars"
+        }
+        return request(app)
+        .post('/api/topics')
+        .send(topic)
+        .expect(201)
+        .then(response => {
+            expect(response.body.topic).toEqual(expect.objectContaining({
+                "slug": "cars"
+                })
+              );
+        })
+    })
+    test('POST: 201 posts a topic when given extra keys in the body and responds with posted topic', () => {
+        const topic = {
+            "slug": "cars",
+            "description": "everything about cars",
+            "author": "karolina"
+        }
+        return request(app)
+        .post('/api/topics')
+        .send(topic)
+        .expect(201)
+        .then(response => {
+            expect(response.body.topic).toEqual(expect.objectContaining({
+                "slug": "cars",
+                "description": "everything about cars"
+                })
+              );
+        })
+    })
+    test('POST: 400 sends an appropriate status and error message when not given slug', () => {
+        const topic = {
+            "description": "everything about cars"
+        }
+        return request(app)
+        .post('/api/topics')
+        .send(topic)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("Bad request.");
+        })
+    })
+    test('POST: 400 sends an appropriate status and error message when given empty body', () => {
+        const topic = {}
+        return request(app)
+        .post('/api/topics')
+        .send(topic)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("Bad request.");
+        })
+    })
+})
