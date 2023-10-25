@@ -63,7 +63,7 @@ exports.fetchArticles = (topic, sortBy = 'created_at', order = 'desc', limit, p)
         return rows.map(row => row.slug)
     }).then(existingTopics => {
    
-    const validSortBy = [ 'article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_img_url'];
+    const validSortBy = [ 'article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_img_url', 'comment_count'];
 
     const validOrder = ['asc', 'desc']
 
